@@ -1,24 +1,25 @@
 <?php
-session_start();
-require 'db.php';
-require 'auth.php';
+session_start(); // Memulai session
+require 'db.php'; // Menghubungkan ke database
+require 'auth.php'; // Menyertakan fungsi otentikasi
 
 if (is_logged_in()) {
-    header('Location: index.php');
-    exit();
+    header('Location: index.php'); // Mengarahkan ke halaman utama jika pengguna sudah login
+    exit(); // Menghentikan eksekusi lebih lanjut
 }
 
-$error = '';
+$error = ''; // Variabel untuk menyimpan pesan kesalahan
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $username = $_POST['username'];
-    $password = $_POST['password'];
+    $username = $_POST['username']; // Mengambil nilai dari form untuk username
+    $password = $_POST['password']; // Mengambil nilai dari form untuk password
 
+    // Memanggil fungsi login untuk memeriksa login pengguna
     if (login($username, $password)) {
-        header('Location: index.php');
-        exit();
+        header('Location: index.php'); // Mengarahkan ke halaman utama jika login berhasil
+        exit(); // Menghentikan eksekusi lebih lanjut
     } else {
-        $error = 'Invalid username or password';
+        $error = 'Invalid username or password'; // Menetapkan pesan kesalahan jika login gagal
     }
 }
 ?>
@@ -28,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
-    <link rel="stylesheet" href="dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="dist/css/bootstrap.min.css"> <!-- Memuat file CSS Bootstrap -->
 </head>
 <body>
     <div class="container mt-5">
@@ -46,10 +47,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <button type="submit" class="btn btn-primary">Login</button>
             </div>
             <?php if ($error): ?>
-                <p class="text-danger"><?php echo $error; ?></p>
+                <p class="text-danger"><?php echo $error; ?></p> <!-- Menampilkan pesan kesalahan jika ada -->
             <?php endif; ?>
         </form>
-        <p>Belum punya akun? <a href="register.php">Daftar disini</a>.</p>
+        <p>Belum punya akun? <a href="register.php">Daftar disini</a>.</p> <!-- Tautan untuk mendaftar jika belum punya akun -->
     </div>
 </body>
 </html>

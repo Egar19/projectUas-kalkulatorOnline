@@ -1,42 +1,43 @@
 <?php
 session_start();
-require 'db.php';
-require 'auth.php';
-require 'vendor/autoload.php'; 
+require 'db.php'; // Memuat file untuk koneksi ke database
+require 'auth.php'; // Memuat file untuk fungsi otentikasi pengguna
+require 'vendor/autoload.php'; // Memuat autoload untuk TCPDF (asumsi TCPDF di-load secara otomatis)
 
 if (!is_logged_in()) {
-    header('Location: login.php');
+    header('Location: login.php'); // Jika pengguna tidak login, arahkan ke halaman login
     exit();
 }
 
-$user_id = $_SESSION['user_id'];
+$user_id = $_SESSION['user_id']; // Ambil ID pengguna dari sesi saat ini
 
+// Menyiapkan query untuk mengambil riwayat perhitungan pengguna berdasarkan ID pengguna
 $stmt = $pdo->prepare("SELECT * FROM calculations WHERE user_id = ? ORDER BY created_at DESC");
 $stmt->execute([$user_id]);
-$calculations = $stmt->fetchAll();
+$calculations = $stmt->fetchAll(); // Ambil semua hasil perhitungan dalam bentuk array
 
-// Create new PDF document
+// Membuat dokumen PDF baru menggunakan TCPDF
 $pdf = new TCPDF();
-$pdf->AddPage();
+$pdf->AddPage(); // Menambahkan halaman baru ke dokumen PDF
 
-// Set title and author
-$pdf->SetTitle('Calculation History');
+// Mengatur judul dan penulis dokumen
+$pdf->SetTitle('Riwayat Perhitungan');
 $pdf->SetAuthor('Kalkulator Online');
 
-// Add a title
+// Menambahkan judul "Riwayat Perhitungan" ke dokumen PDF
 $pdf->SetFont('helvetica', 'B', 20);
-$pdf->Cell(0, 15, 'Calculation History', 0, 1, 'C');
+$pdf->Cell(0, 15, 'Riwayat Perhitungan', 0, 1, 'C');
 
-// Set font for the content
+// Mengatur gaya font untuk konten dokumen PDF
 $pdf->SetFont('helvetica', '', 12);
 
-// Add the calculation history
+// Menambahkan riwayat perhitungan ke dokumen PDF
 foreach ($calculations as $calculation) {
-    $expression = $calculation['expression'];
-    $result = $calculation['result'];
-    $pdf->Cell(0, 10, "$expression = $result", 0, 1);
+    $expression = $calculation['expression']; // Ekspresi perhitungan
+    $result = $calculation['result']; // Hasil perhitungan
+    $pdf->Cell(0, 10, "$expression = $result", 0, 1); // Menambahkan setiap entri perhitungan sebagai sel di dokumen PDF
 }
 
-// Output the PDF as a download
+// Outputkan dokumen PDF sebagai unduhan dengan nama file 'calculation_history.pdf'
 $pdf->Output('calculation_history.pdf', 'D');
 ?>

@@ -1,19 +1,20 @@
 <?php
-session_start();
-require 'db.php';
-require 'auth.php';
+session_start(); // Memulai session
+require 'db.php'; // Menghubungkan ke database
+require 'auth.php'; // Menyertakan fungsi otentikasi
 
-$error = '';
+$error = ''; // Variabel untuk menyimpan pesan kesalahan
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $username = $_POST['username'];
-    $password = $_POST['password'];
+    $username = $_POST['username']; // Mengambil nilai dari form untuk username
+    $password = $_POST['password']; // Mengambil nilai dari form untuk password
 
+    // Memanggil fungsi register untuk mencoba mendaftarkan pengguna
     if (register($username, $password)) {
-        header('Location: login.php');
-        exit();
+        header('Location: login.php'); // Mengarahkan ke halaman login jika registrasi berhasil
+        exit(); // Menghentikan eksekusi lebih lanjut
     } else {
-        $error = 'Registration failed, please try again';
+        $error = 'Registration failed, please try again'; // Menetapkan pesan kesalahan jika registrasi gagal
     }
 }
 ?>
@@ -23,7 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Daftar</title>
-    <link rel="stylesheet" href="dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="dist/css/bootstrap.min.css"> <!-- Memuat file CSS Bootstrap -->
 </head>
 <body>
     <div class="container mt-5">
@@ -41,10 +42,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <button type="submit" class="btn btn-primary">Daftar</button>
             </div>
             <?php if ($error): ?>
-                <p class="text-danger"><?php echo $error; ?></p>
+                <p class="text-danger"><?php echo $error; ?></p> <!-- Menampilkan pesan kesalahan jika ada -->
             <?php endif; ?>
         </form>
-        <p>Sudah punya akun? <a href="login.php">Login disini</a>.</p>
+        <p>Sudah punya akun? <a href="login.php">Login disini</a>.</p> <!-- Tautan untuk login jika sudah punya akun -->
     </div>
 </body>
 </html>
